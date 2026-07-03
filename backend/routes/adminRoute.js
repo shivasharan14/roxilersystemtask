@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { verifyToken, authorize } = require('../middleware/auth');
 const adminController = require('../controllers/adminController');
+// adminController.js च्या सुरुवातीला
+const db = require('../models/index'); // हे करून बघ
 
 // फक्त Admin साठी डॅशबोर्ड
 // जर डेटाबेसमध्ये 'System Administrator' असेल तर इथं तसंच लिही:

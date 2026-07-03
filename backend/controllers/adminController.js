@@ -5,18 +5,17 @@ const bcrypt = require('bcrypt');
 
 exports.getDashboardStats = async (req, res) => {
     try {
-        // तिन्ही टेबल्स मधून काउंट काढणे
         const totalUsers = await User.count();
         const totalStores = await Store.count();
         const totalRatings = await Rating.count();
+        const users = await User.findAll(); // हे पण ऍड कर म्हणजे टेबलात युजर्स दिसतील
 
+        // 'data' ऑब्जेक्ट काढून टाका किंवा फ्रंटएंडमध्ये तो एक्सेस करा
         res.json({
-            message: "Dashboard stats fetched successfully",
-            data: {
-                totalUsers,
-                totalStores,
-                totalRatings
-            }
+            totalUsers,
+            totalStores,
+            totalRatings,
+            users
         });
     } catch (error) {
         res.status(500).json({ error: error.message });

@@ -15,7 +15,9 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/stores', storeRoutes);
 app.use('/api/ratings', ratingRoutes);
+console.log("Loading admin routes...");
 app.use('/api/admin', adminRoutes);
+console.log("Admin routes loaded successfully!");
 app.use('/api/owner', ownerRoutes);
 
 app.get('/', (req, res) => {

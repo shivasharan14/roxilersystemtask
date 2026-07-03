@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { getAdminStats, getOwnerDashboard, getAllStores } from '../services/api';
+// १. येथे दुरुस्ती केली: फक्त एकदा आणि योग्य नाव (getDashboardStats)
+import { getDashboardStats, getOwnerDashboard, getAllStores } from '../services/api';
 
-// Importing components
 import AdminDashboard from '../components/AdminDashboard';
 import OwnerDashboard from '../components/OwnerDashboard';
 import UserDashboard from '../components/UserDashboard';
@@ -20,16 +20,16 @@ const Dashboard = () => {
     const fetchDashboardData = async () => {
       try {
         let res;
-        // Using the service functions we created earlier
+        // २. इथेही नाव getDashboardStats केले
         if (role === 'System Administrator') {
-          res = await getAdminStats();
-          setData(res.data.data); // Based on Admin controller structure
+          res = await getDashboardStats();
+          setData(res); // आपण api.js मध्येच .data रिटर्न केलंय, त्यामुळे इथे फक्त res
         } else if (role === 'Store Owner') {
           res = await getOwnerDashboard();
-          setData(res.data);
+          setData(res);
         } else {
           res = await getAllStores();
-          setData(res.data);
+          setData(res);
         }
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -49,22 +49,17 @@ const Dashboard = () => {
 
   if (loading) return <div className="text-center mt-5"><h3>Loading...</h3></div>;
 
-  return (
+  // आणि खाली असे चेक करा:
+return (
     <div className="container mt-5">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <div>
-           <h2>Welcome, {userName}</h2>
-           <span className="badge bg-primary">{role}</span>
-        </div>
-        <button className="btn btn-outline-danger" onClick={handleLogout}>Logout</button>
-      </div>
-
-      {/* Conditional rendering based on role */}
-      {role === 'System Administrator' && <AdminDashboard stats={data} />}
-      {role === 'Store Owner' && <OwnerDashboard stats={data} />}
-      {role === 'User' && <UserDashboard stores={data} />}
+        {/* ... */}
+        
+        {/* 'data' असेल तरच पाठवा */}
+        {role === 'System Administrator' && data && <AdminDashboard stats={data} />}
+        {role === 'Store Owner' && data && <OwnerDashboard stats={data} />}
+        {role === 'User' && data && <UserDashboard stores={data} />}
     </div>
-  );
+);
 };
 
 export default Dashboard;
