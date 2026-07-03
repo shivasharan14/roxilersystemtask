@@ -16,7 +16,12 @@ module.exports = (sequelize, DataTypes) => {
   Store.init({
     name: DataTypes.STRING,
     email: DataTypes.STRING,
-    address: DataTypes.STRING
+    address: DataTypes.STRING,
+    // models/Store.js मध्ये असा बदल कर:
+ownerId: {
+  type: DataTypes.STRING,
+  allowNull: true // सुरुवातीला 'true' ठेव म्हणजे जुन्या डेटाला त्रास होणार नाही
+}
   }, {
     sequelize,
     modelName: 'Store',

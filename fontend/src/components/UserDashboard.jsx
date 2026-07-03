@@ -10,7 +10,7 @@ const UserDashboard = ({ stores }) => {
         try {
             await submitRating({
                 storeId: selectedStore.id,
-                score: rating.score,
+                score: Number(rating.score),
                 comment: rating.comment
             });
             toast.success("Rating submitted successfully! 🎉");
@@ -25,7 +25,7 @@ const UserDashboard = ({ stores }) => {
         <div className="container mt-4">
             <h3>Available Stores to Rate</h3>
             <div className="row mt-4">
-                {stores?.map((s) => (
+                {Array.isArray(stores) && stores.map((s) => (
                     <div key={s.id} className="col-md-4 mb-4">
                         <div className="card h-100 shadow-sm border-0">
                             <div className="card-body">

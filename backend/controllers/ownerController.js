@@ -24,9 +24,11 @@ exports.getOwnerStoreStats = async (req, res) => {
 
 
 exports.getOwnerDashboard = async (req, res) => {
+    
     try {
+        const ownerId = req.user.id;
         // १. ओनरच्या लॉगिन ID वरून त्याचं स्टोअर शोधू
-        const store = await db.Store.findOne({ where: { userId: req.user.id } });
+       const store = await Store.findOne({ where: { ownerId: ownerId } });
         
         if (!store) {
             return res.status(404).json({ message: "Store not found for this owner!" });
