@@ -8,7 +8,7 @@ const OwnerDashboard = ({ stats }) => {
         <div className="container mt-4">
             {/* जर डेटाच नसेल तर एक मेसेज दाखवा */}
             {!data ? (
-                <div className="alert alert-info">डेटा उपलब्ध नाही.</div>
+                <div className="alert alert-info">Data is not available</div>
             ) : (
                 <>
                     <div className="card shadow p-4 mb-4">

@@ -1,46 +1,30 @@
 const db = require('../models');
-
-exports.getOwnerStoreStats = async (req, res) => {
-    try {
-        // समजा, ओनरच्या आयडीवरून आपण त्याचं स्टोअर शोधू
-        const store = await db.Store.findOne({ 
-            where: { ownerId: req.userId }, 
-            include: [db.Rating] 
-        });
-
-        if (!store) return res.status(404).json({ error: "Store not found" });
-
-        // सरासरी काढण्यासाठी लॉजिक
-        const ratings = store.Ratings;
-        const avgScore = ratings.length > 0 
-            ? ratings.reduce((sum, r) => sum + r.score, 0) / ratings.length 
-            : 0;
-
-        res.json({ storeName: store.name, averageRating: avgScore, ratings: ratings });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
+// हे २ मॉडेल तिथे 'import' असणे गरजेचे आहे:
+const Store = db.Store; 
+const Rating = db.Rating;
+const User = db.User;
 
 exports.getOwnerDashboard = async (req, res) => {
-    
     try {
         const ownerId = req.user.id;
-        // १. ओनरच्या लॉगिन ID वरून त्याचं स्टोअर शोधू
-       const store = await Store.findOne({ where: { ownerId: ownerId } });
+        
+        // १. इथे 'Store' वापर (db.Store ऐवजी)
+        const store = await Store.findOne({ where: { ownerId: ownerId } });
         
         if (!store) {
-            return res.status(404).json({ message: "Store not found for this owner!" });
+            return res.status(404).json({ message: "Store not found!" });
         }
 
-        // २. त्या स्टोअरचे सर्व रेटिंग्स काढू (सोबत युजरचे नावही घेऊ)
-        const ratings = await db.Rating.findAll({
+        // २. रेटिंग्स काढताना 'Rating' आणि 'User' मॉडेल वापर
+        const ratings = await Rating.findAll({
             where: { storeId: store.id },
-            include: [{ model: db.User, attributes: ['name', 'email'] }]
+            include: [{ 
+                model: User, 
+                attributes: ['name', 'email'] 
+            }]
         });
 
-        // ३. सरासरी (Average Score) काढू
+        // ३. सरासरी काढणे
         const totalScore = ratings.reduce((sum, r) => sum + r.score, 0);
         const avgScore = ratings.length > 0 ? (totalScore / ratings.length).toFixed(1) : 0;
 
@@ -51,6 +35,7 @@ exports.getOwnerDashboard = async (req, res) => {
             ratings: ratings
         });
     } catch (error) {
+        console.error("SERVER ERROR:", error); // ही एरर टर्मिनलवर काय येतेय ते बघ
         res.status(500).json({ error: error.message });
     }
 };

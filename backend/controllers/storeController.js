@@ -5,13 +5,20 @@ const Rating = db.Rating;
 exports.addStore = async (req, res) => {
     try {
         const { name, email, address } = req.body;
-        const newStore = await Store.create({ name, email, address });
+        // 'req.user.id' हे तुमच्या auth मिडलवेअरमधून येते
+        const ownerId = req.user.id; 
+
+        const newStore = await Store.create({ 
+            name, 
+            email, 
+            address, 
+            ownerId // आता हे आपोआप डेटाबेसमध्ये जाईल
+        });
         res.status(201).json({ message: "Store added successfully!", store: newStore });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
-
 exports.getAllStores = async (req, res) => {
     try {
         const stores = await Store.findAll({
